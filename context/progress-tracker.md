@@ -4,11 +4,11 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-Feature Spec 01 — complete. Ready for Spec 02 (onboarding flow).
+Feature Spec 02 — complete. Ready for Spec 03 (onboarding flow UI).
 
 ## Current Goal
 
-Onboarding flow: Create household → Invite → Cadence → Done.
+Onboarding flow UI: Create household → Invite → Cadence → Done
 
 ## Completed
 
@@ -16,6 +16,9 @@ Onboarding flow: Create household → Invite → Cadence → Done.
 - Design decisions clarified with user (auth, sync, platforms, v1 scope)
 - **Feature Spec 01**: folder structure, NativeWind swish tokens, tab navigation shell,
   auth screens (Welcome / Sign In / Sign Up), GoApiAdapter skeleton, JWT in SecureStore
+- **Feature Spec 02**: `swishdish-api/` Go backend — JWT auth (sign-up/sign-in),
+  household endpoints (create/get/invite/cadence), PostgreSQL migrations, Dockerfile,
+  docker-compose.yaml
 
 ## In Progress
 
@@ -23,8 +26,8 @@ Onboarding flow: Create household → Invite → Cadence → Done.
 
 ## Next Up
 
-1. Onboarding flow: Create household → Invite → Cadence → Done
-8. Home screen (Plan tab)
+1. Onboarding flow UI: Create household → Invite → Cadence → Done
+2. Home screen (Plan tab)
 9. Swipe deck screen
 10. Matches summary screen
 11. Recipe detail screen

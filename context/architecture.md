@@ -57,6 +57,66 @@
 - A user belongs to exactly one household in v1; the concept of a "current household"
   does not need to be UI-managed
 
+## Backend: swishdish-api
+
+The Go backend lives at `swishdish-api/` in the project root. It is a pure stdlib
+`net/http` server — no web framework. PostgreSQL is used for all persistence.
+
+**Location:** `swishdish-api/`
+**Module:** `swishdish-api`
+**Entry point:** `cmd/server/main.go`
+**Listen address:** `:8080` (configurable via `PORT` env var)
+
+### Package layout
+
+| Package | Path | Role |
+|---------|------|------|
+| `main` | `cmd/server/` | Server bootstrap, mux wiring |
+| `db` | `internal/db/` | DB open + auto-migration |
+| `auth` | `internal/auth/` | Sign-up/sign-in handlers + service |
+| `household` | `internal/household/` | Household CRUD handlers + service |
+| `middleware` | `internal/middleware/` | JWT auth middleware + context helpers |
+| `migrations` | `migrations/` | Embedded SQL migrations (via `//go:embed`) |
+
+### Environment variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `DATABASE_URL` | yes | — | Full PostgreSQL DSN |
+| `JWT_SECRET` | yes | — | HS256 signing key, min 32 chars |
+| `PORT` | no | `8080` | HTTP listen port |
+
+### API endpoints (Phase 1)
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/health` | no | Liveness check |
+| `POST` | `/auth/sign-up` | no | Register user, returns JWT + user |
+| `POST` | `/auth/sign-in` | no | Login, returns JWT + user |
+| `POST` | `/households` | yes | Create household (creator becomes owner) |
+| `GET` | `/household` | yes | Get authenticated user's household |
+| `POST` | `/household/invites` | yes | Add a pending invite (email or phone) |
+| `PUT` | `/household/cadence` | yes | Set planning days and reminder time |
+
+### JWT
+
+- Algorithm: HS256, lifetime: 30 days
+- Custom claims: `name`, `avatar_color` (embedded in token — no DB lookup on verify)
+- Subject (`sub`): user UUID
+
+### Docker
+
+- `swishdish-api/Dockerfile` — multi-stage build; final image is `alpine:3.21`
+- `docker-compose.yaml` (project root) — orchestrates `db` (postgres:16-alpine) and `api`
+- `db` healthcheck gate prevents API starting before Postgres is ready
+
+### Dependencies
+
+- `github.com/golang-jwt/jwt/v5` — JWT signing/verification
+- `golang.org/x/crypto` — bcrypt password hashing
+- `github.com/lib/pq` — PostgreSQL driver
+- `github.com/golang-migrate/migrate/v4` — database migrations
+
 ## Invariants
 
 1. All network calls go through the `ApiAdapter` interface — no raw `fetch()` or `axios`
