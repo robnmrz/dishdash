@@ -1,17 +1,6 @@
-import { Text, View, StyleSheet } from "react-native";
+import { View } from "react-native";
 
-export default function Index() {
-  return (
-    <View style={styles.container}>
-      <Text>Edit src/app/index.tsx to edit this screen.</Text>
-    </View>
-  );
+// Root layout handles auth check and redirect — this screen is never rendered.
+export default function RootIndex() {
+  return <View className="flex-1 bg-swish-cream" />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
